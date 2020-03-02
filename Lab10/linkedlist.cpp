@@ -3,14 +3,14 @@ using namespace std;
 
 #include "function.h"
 
-/* Node Definition:
- *
- * struct Node { 
- *    int data; 
- *    struct Node *next; 
- * };
- *
-*/
+
+ /*
+  struct Node { 
+     int data; 
+     struct Node *next; 
+  };
+ */
+
 
 /*
  * Lab10 Part 1: Implement push and print functions for creating
@@ -31,7 +31,11 @@ Node* push(Node* head, int new_data) {
    */
 
    // Your implementation here
-
+   struct Node* newNode = new Node;
+   newNode->data = new_data;
+   newNode->next = head;
+   head = newNode;
+   return head;
 }
 
 void print(Node* head) { 
@@ -45,7 +49,12 @@ void print(Node* head) {
    */
 
    // Your implementation here
-
+   Node* t = head;
+   while(t!=NULL){
+	   cout << t->data << "->";
+	   t = t->next;
+   }
+   cout << "NULL" << endl;
 }
 
 
@@ -65,7 +74,15 @@ bool isEmpty(Node* head) {
    */
 
    // Your implementation here
-
+   bool empty;
+   Node* t = head;
+   if(t == NULL){
+      empty = true;
+   }
+   else{
+      empty = false;
+   }
+   return empty;
 }
 
 int size(Node* head) {
@@ -77,7 +94,13 @@ int size(Node* head) {
    */
 
    // Your implementation here
-
+   int count = 0;
+   Node* t = head;
+   while(t != NULL){
+      count++;
+      t = t->next;
+   }
+   return count;
 }
 
 int top(Node* head) {
@@ -90,7 +113,7 @@ int top(Node* head) {
     * E.g.  If stack was 3->2->1->NULL then top should return 3
    */
 
-   // Your implementation here
+   return head->data;
 
 }
 
@@ -103,17 +126,22 @@ Node* pop(Node* head) {
     *
     * E.g.  If stack was 4->3->2->1->NULL before pop with 
     *       head pointing to 4, then after pop, stack should
-    *       be 3->2->1->NULL with head pointing to 4
+    *       be 3->2->1->NULL with head pointing to 3
    */
 
    // Your implementation here
-
+   Node* t = head;
+   t = t->next;
+   delete head;
+   head = t;
+   return head;
 }
 
 
 /*
  * Lab10 Part 3: Find the middle element of a linked list
 */
+
 Node* middle_element(Node* head) {
    /* 
     * input parameter:   pointer to head of linked list
@@ -124,8 +152,18 @@ Node* middle_element(Node* head) {
    */
 
    // Your implementation here
-
+   Node* t = head;
+   int count = 0;
+   while(head!=NULL){
+      if((count%2) != 0){
+         t = t->next;
+      }
+      count++;
+      head = head->next;
+   }
+      return t;
 }
+
 
 /*
  * Lab10 Part 4: Remove middle node from Linked List
@@ -136,10 +174,16 @@ Node* remove_middle_element(Node* head, Node* middle_node) {
     *                    pointer to the node to remove
     * returns: Return the head pointer
     *
-    * E.g. For 5->4->3->2->1->NULL, after this operation the
+    * E.g. For 6->5->4->3->2->1->NULL, after this operation the
     *      linked list will become 5->4->2->1->NULL
    */
 
    // Your implementation here
-
+   Node* t = head;
+   while(t->next != middle_node){
+      t = t->next;
+   }
+   t->next = middle_node->next;
+   delete middle_node;
+   return head;
 }
