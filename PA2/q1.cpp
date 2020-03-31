@@ -9,7 +9,12 @@
 void child(int p, const std::vector<int> Parent)
 {
     // Remove below line after your implementation
-    return;
+    for(unsigned int i = 0; i < Parent.size(); i++){
+		if (Parent[i] == p){
+				std::cout << i << " ";
+		}
+	}
+	std::cout << std::endl;
 }
 
 void testChild(const std::vector<int> Parent){

@@ -1,8 +1,10 @@
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
+#include<iostream>
 #include "dsexceptions.h"
 #include <algorithm>
+
 using namespace std;       
 
 // BinarySearchTree class
@@ -209,6 +211,8 @@ class BinarySearchTree
     };
 
     BinaryNode *root;
+	
+	
 
 
     /**
@@ -276,13 +280,30 @@ class BinarySearchTree
 
     /**
      * Q 2.6
-     * Add the code in below function that performs remove right 
+     * Add the code in below function that performs remove left 
      * operation on the Binary tree.
      */
     void remove_left( const Comparable & x, BinaryNode * & t )
     {
         // Remove below line after your implementation
-        return;
+        if(t == nullptr){
+			return;
+		}
+		if(x < t->element){
+			remove_left(x, t->left);
+		}
+		else if (t->element < x){
+			remove_left(x,t->right);
+		}
+		else if(t->left != nullptr && t->right != nullptr){
+			t->element = findMax(t->left)->element;
+			remove_left(t->element,t->left);
+		}
+		else{
+			BinaryNode *oldNode = t;
+			t = (t->left != nullptr) ? t->left : t->right;
+			delete oldNode;
+		}
     }
 
 
@@ -368,6 +389,7 @@ class BinarySearchTree
             out << t->element << endl;
             printTree( t->right, out );
         }
+		//inorder traversal
     }
 
 
@@ -380,7 +402,12 @@ class BinarySearchTree
     void preorder ( BinaryNode *t, ostream & out ) const
     {
         // Remove below line after your implementation
-        return;
+		if (t == nullptr){
+			return;
+		}
+		out << t->element << std::endl;
+		preorder(t->left, out);
+		preorder(t->right, out);
     }
 
     /**
@@ -390,8 +417,27 @@ class BinarySearchTree
      */
     int max_depth (BinaryNode *t ) const
     {
+		if (t == nullptr){
+			return 0;
+		}
+		if(t->left == nullptr && t->right == nullptr){
+			return 1;
+		}
+		if (t->left == nullptr){
+			return  max_depth(t->right) + 1;
+		}
+		if(t->right == nullptr){
+			return  max_depth(t->left) + 1;
+		}
+		int ldepth = max_depth(t->left);
+		int rdepth = max_depth(t->right);
+		if(ldepth < rdepth){
+			return rdepth + 1;
+		}
+		else{
+			return ldepth + 1;
+		}
         // Remove below line after your implementation
-        return 0;
     }
 
     /**
@@ -402,7 +448,26 @@ class BinarySearchTree
     int min_depth (BinaryNode *t ) const
     {
         // Remove below line after your implementation
-        return 0;
+		if (t == nullptr){
+			return 0;
+		}
+		if(t->left == nullptr && t->right == nullptr){
+			return 1;
+		}
+		if (t->left == nullptr){
+			return  min_depth(t->right) + 1;
+		}
+		if(t->right == nullptr){
+			return  min_depth(t->left) + 1;
+		}
+		int ldepth = min_depth(t->left);
+		int rdepth = min_depth(t->right);
+		if(ldepth < rdepth){
+			return ldepth + 1;
+		}
+		else{
+			return rdepth + 1;
+		}
     }
 
     /**
@@ -410,12 +475,22 @@ class BinarySearchTree
      * Add the code in below function that will evaluate the 
      * diameter of the Binary tree and return the integer value.
      */
+	
     int diameter (BinaryNode *t ) const
     {
         // Remove below line after your implementation
-        return 0;
+		if(t==nullptr){
+		return 0;
+		}
+		int ld = diameter(t->left);
+		int rd = diameter(t->right);
+		int lh = max_depth(t->left);
+		int rh = max_depth(t->right);
+		return max(lh + rh +1 ,max(ld,rd));
+		
+		
     }
-
+	
     /**
      * Q 4
      * Add the code in below function that will perform level order 
@@ -424,10 +499,87 @@ class BinarySearchTree
      * Note: Do not use STL Queue library. Create your own implementaion
      * of queue data structure and use it here.
      */
+	 
+	template <typename Node>
+	class queue{
+		Node *array;
+		int capacity;
+		int count;
+		public:
+		queue(){
+			capacity=10;
+			array = new Node[capacity];
+			count = 0;
+		}
+		~queue(){
+			capacity=0;
+			delete array;
+		}
+		void pop(){
+			if(empty()){
+				return;
+			}
+			if(size()>0){
+				for(int i = 0; i < size(); i++){
+					array[i] = array[i+1];
+				}
+				count--;
+			}
+			
+			
+		}
+		void push(Node x){
+			
+			if(size()==capacity){
+				capacity*=2;
+				Node* newArr = new Node[capacity];
+				for(int i = 0; i < size(); i++){
+					newArr[i] = array[i];
+				}
+				delete array;
+				array = newArr;
+				
+			}
+			array[size()] = x;
+			count++;
+			
+		}
+		bool empty(){
+			return (size()==0);
+		}
+		bool isFull(){
+			return (size()==capacity);
+		}
+		int size(){
+			return count;
+		}
+		Node fronto(){
+			if(size()>0){
+				return array[0];
+			}
+		}
+	};
+
+
     void levelorder ( BinaryNode *t, ostream & out ) const
     {
-        // Remove below line after your implementation
-        return;
+		if (t == nullptr){
+			return;
+		}
+		queue <BinaryNode *> qew;
+		qew.push(t);
+		out << qew.fronto()->element << endl;
+		while(qew.empty() != true){
+			if(qew.fronto() -> right){
+				qew.push(qew.fronto()->right);
+				out << qew.fronto()->right->element << endl;
+			}
+			if(qew.fronto()->left){
+				qew.push(qew.fronto()->left);
+				out << qew.fronto()->left->element << endl;
+			}
+			qew.pop();
+		}
     }
 
 
@@ -439,8 +591,59 @@ class BinarySearchTree
      */
     void LCA(BinaryNode *t, int x, int y, ostream & out) const
     {
+		BinaryNode* start = t;
+		int xf,yf, lca;
         // Remove below line after your implementation
-        return;
+		if(t == nullptr){
+			out << "Do not exist"<<endl;
+			return;
+		}
+		while(t!=nullptr){
+			if (t->element > x && t->element > y){
+				t=t->left;
+			}
+			else if(t->element < x && t->element < y){
+				t=t->right;
+			}
+			else{
+				lca = t->element;
+				break;
+			}
+		}
+
+		t = start;
+		while(t!=nullptr){
+			if(y < t->element){
+				t = t->left;
+			}
+			else if (y > t->element){
+				t = t->right;
+			}
+			else{
+				yf = 1;
+				break;
+			}
+		}
+		t = start;
+		while(t!=nullptr){
+			if(x< t->element){
+				t = t->left;
+			}
+			else if (x > t->element){
+				t = t->right;
+			}
+			else{
+				xf = 1;
+				break;
+			}
+		}
+		if(xf == 1 && yf == 1){
+			out << lca << endl;
+		}
+		else{
+			out << "Do not exist" << endl;
+			return;
+		}
     }
 
 

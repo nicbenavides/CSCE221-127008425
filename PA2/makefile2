@@ -1,0 +1,9 @@
+target: t1
+	@echo "Building Target"
+	g++ q1 -o PA2
+
+t1: q1.cpp
+	g++ -c q1.cpp -o q1
+	
+all: target
+
