@@ -18,11 +18,22 @@ int main()
     getline(in,line);
 
     string partOf;
-
     while (in)
     {
-        // your implementation here for building coronamap
+        string country = "";
+		int cases = 0;
+		in>>country>>cases;
+		coronamap[country] = cases;
     }
+	map<string,int>::iterator itr;
+	int maximum = -1;
+	for(itr = coronamap.begin(); itr!=coronamap.end(); ++itr){
+		if(itr->second>maximum){
+			maximum = itr->second;
+			partOf = itr->first;
+		}
+	}
+	cout << "Most confirmed cases are in " << partOf << endl;
     
     // your implementation here to print the country with max cases
     // E.g. Most confirmed cases are in USA

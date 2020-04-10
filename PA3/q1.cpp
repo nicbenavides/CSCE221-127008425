@@ -25,10 +25,29 @@ int main()
 
     in.open(filename.c_str());
     getline(in,line);
-
+	
+	word = "";
     while (in)
     {
-        // Your implementatio here
+		for(int i = 0; i < line.length(); i++){
+			if(line[i] == '"'){
+				i = line.substr(i+1).find('"')+1+i;
+			}
+			else if(line[i] == '/' && line[i+1] == '/' && i != line.length()-1){
+				continue;
+			}
+			else if(line[i] == ' ' || line[i] == ';' || line[i] == ',' || line[i] == ':' || line[i] == '<' || line[i] == '>' || line[i] == '(' || line[i] == ')' || line[i] == '{' || line[i] == '}' || line[i] == '=' || line[i]== '#' || line[i] == '.' || line[i] == '-' || line[i] == '0'){
+				if(reserved.find(word) == reserved.end() && idents.find(word) == idents.end()){
+					idents.insert(idents.end(),word);
+				}
+				word = "";
+			}
+			else{
+				word = word + line[i];
+			}
+			
+		}
+		getline(in,line);
     }
 
     for (auto x:idents)

@@ -1,6 +1,7 @@
 #ifndef ORDERED_MAP_H
 #define ORDERED_MAP_H
-
+#include<sstream>
+#include<iostream>
 using namespace std;       
 
 // OrderedMap class
@@ -105,9 +106,14 @@ class OrderedMap
      * Note: Return value of this function should be between 0 than MAP_MAX_SIZE - 1.
      */
     int hashFunction( const Key & key ) {
-        
-        // Remove below line after your implementation
-        return 0;
+		stringstream s;
+		s << key;
+		string strung= s.str();
+		int answer = 0;
+		for(int i = 0; i < strung.length(); i++){
+			answer += (int)strung[i];
+		}
+        return answer;
     }
 
     /** Q 4.2
@@ -120,8 +126,36 @@ class OrderedMap
      */
     void insert( int hash_key, const Key & key, const Value & value, KeyNode* t )
     {
-        // Remove below line after your implementation
-        return;
+		KeyNode *currKN = t;
+		KeyNode *prevKN = currKN;
+		ValueNode *vn = new ValueNode(key, value, nullptr);
+		bool isF = false;
+		while(currKN != nullptr){
+			if(currKN->hash_key == hash_key){
+				isF = true;
+				break;
+			}
+			else if (currKN->hash_key < hash_key){
+				prevKN = currKN;
+				currKN=currKN->down;
+				
+			}
+			else{
+				break;
+			}
+		}
+		if(isF){
+			ValueNode *currVN = currKN->right;
+			while(currVN->right != nullptr){
+				currVN = currVN->right;
+			}
+			currVN->right = vn;
+			
+		}
+		else{
+			KeyNode *nKN = new KeyNode(hash_key, vn, currKN);
+				prevKN->down = nKN;
+		}
     }
 
 
